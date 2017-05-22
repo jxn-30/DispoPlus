@@ -10,5 +10,5 @@
 
 var scriptElement = document.createElement("script");
 scriptElement.type = "text/javascript";
-scriptElement.src = "https://jalibu.github.io/LSHeat/LSHeat/LSHeatScript.js";
+scriptElement.src = "https://jalibu.github.io/LSHeat/LSHeat/LSHeatScript.min.js";
 document.body.appendChild(scriptElement);
