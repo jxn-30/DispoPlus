@@ -155,9 +155,10 @@ function handleIframeWindow(){
         var navTabs = $('#iframe-inside-container .nav-tabs');
     if($(navTabs).text().indexOf('Einstellungen') > 0){
         $(navTabs).append('<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="tab_heatmap" href="#tab_heatmap" aria-expanded="false">Heatmap</a></li>');
+        renderSettings();
         if(window.location.hash === '#tab_settings') {
-            renderSettings();
             $("a[href='#tab_heatmap']").click();
+            console.log("Open Tab");
         }
     }
 }
