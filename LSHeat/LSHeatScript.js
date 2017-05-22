@@ -158,7 +158,6 @@ function handleIframeWindow(){
         renderSettings();
         if(window.location.hash === '#tab_settings') {
             $("a[href='#tab_heatmap']").click();
-            console.log("Open Tab");
         }
     }
 }
