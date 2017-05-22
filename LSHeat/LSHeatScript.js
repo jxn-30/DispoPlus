@@ -144,10 +144,15 @@ function handleMainWindow() {
       });
     }
 
-    'use strict';
-
     $( window ).load(function() {
-      $('.leaflet-control-container .leaflet-top.leaflet-left').append('<a href="/leitstelle#tab_settings" id="heatmap-config" class="leaflet-bar leaflet-control leaflet-control-custom hidden-xs lightbox-open" style="background-color: white; width: 26px; height: 26px;">HM</a>');
+        var btn_text;
+        if(heatmapSettings['heatmap-activated']){
+             btn_text = carIds[heatmapSettings['heatmap-vehicle']];
+        } else {
+            btn_text = "Aktivieren";
+        }
+        
+      $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<a href="/leitstelle#tab_settings" id="heatmap-config" class="leaflet-bar leaflet-control leaflet-control-custom hidden-xs lightbox-open" style="background-color: white;  height: 30px;"><img style="height: 22px; width: 22px" src="https://jalibu.github.io/LSHeat/LSHeat/map.png"><span style="margin-left: 5px; margin-right: 5px;">' + btn_text + '</span></a>');
   });
 }
 
