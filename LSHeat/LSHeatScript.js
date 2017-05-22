@@ -1,13 +1,3 @@
-// ==UserScript==
-// @name         LS Heatmap
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  Skript zur Anzeige eines Heatmap-Overlays, zur Identifikation von Cold-Spots in der Abdeckung.
-// @author       Jalibu
-// @match        https://www.leitstellenspiel.de/*
-// @grant        none
-// ==/UserScript==
-
 var carIds = {
     0: 'LF 20',
     1: 'LF 10',
