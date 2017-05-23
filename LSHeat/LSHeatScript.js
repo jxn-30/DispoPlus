@@ -144,7 +144,7 @@
         } else {
             btn_text = "Aktivieren";
         }
-        $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<div id="ls-heatmap-config-wrapper" class="leaflet-bar leaflet-control" style="background-color: white;"><img id="ls-heatmap-config-img" style="height: 22px; width: 22px" src="https://jalibu.github.io/LSHeat/LSHeat/ls-heat-layer.png"></div>');
+        $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<div id="ls-heatmap-config-wrapper" class="leaflet-bar leaflet-control" style="background-color: white;"><img id="ls-heatmap-config-img" style="height: 32px; width: 32px; cursor: pointer;" src="https://jalibu.github.io/LSHeat/LSHeat/ls-heat-layer.png"></div>');
         $('#ls-heatmap-config-img').on('click', function(){
             var wrapper = $('#ls-heatmap-config-wrapper');
             var isOpened = $(wrapper).attr('data-opened') == 'true';
@@ -179,7 +179,7 @@
                 }
 
                 // Buttons
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td><button id="heatmap_save" class="btn btn-success">Speichern</button></td><td><button id="heatmap_close" class="btn">SchlieÃen</button></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td><button id="heatmap_save" class="btn btn-success">Speichern</button></td><td><button id="heatmap_close" class="btn">Schließen</button></td></tr>');
 
                 $('#heatmap_save').click(function () {
                     setSettings();
