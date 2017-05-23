@@ -84,7 +84,7 @@
         var settings = {
             'heatmap-activated': {'name': 'Aktiviert', 'type': 'boolean', 'default': false},
             'heatmap-radius': {'name': 'Radius', 'type': 'range', 'default': '80'},
-            'heatmap-intensity': {'name': 'IntensitÃ¤t', 'type': 'range', 'default': '15'},
+            'heatmap-intensity': {'name': 'Intensität', 'type': 'range', 'default': '15'},
             'heatmap-vehicle': {'name': 'Fahrzeug-Typ', 'type': 'select', 'default': '0', 'values' : carIds}
         };
 
@@ -166,7 +166,7 @@
                 $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><input type="text" value="' + getSetting('heatmap-radius') + '" id="heatmap-radius"></td></tr>');
 
                 // Intensity
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>IntensitÃ¤t</td><td><input type="text" value="' + getSetting('heatmap-intensity') + '" id="heatmap-intensity"></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><input type="text" value="' + getSetting('heatmap-intensity') + '" id="heatmap-intensity"></td></tr>');
 
                 // Vehicle
                 $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Fahrzeug</td><td><select id="heatmap-vehicle"></select></td></tr>');
