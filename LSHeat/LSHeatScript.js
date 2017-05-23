@@ -197,6 +197,11 @@
     }
     var heat;
     function renderMap(){
+    	if (heat !== undefined) {
+    		map.removeLayer(heat);
+    		heat = undefined;
+    	}
+    	
         if(getSetting('heatmap-activated')){
             var vehicles = [];
             $('#building_list .building_list_li').each(function(){
@@ -218,7 +223,6 @@
                     entries.push([vehicle.lat, vehicle.long, getSetting('heatmap-intensity')]);
                 }
             });
-            if (heat !== undefined) map.removeLayer(heat);
             heat = L.heatLayer(entries, {radius: getSetting('heatmap-radius')}).addTo(map);
         }
     }
