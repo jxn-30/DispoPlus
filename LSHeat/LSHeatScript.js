@@ -1,10 +1,9 @@
 (function() {
     'use strict';
 
-    if(!jquery.ui){
-        $('head').append('<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>');
-        $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></script>');
-    }
+    $('head').append('<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>');
+    $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></script>');
+
 
     $('head').append('<script type="text/javascript" src="https://jalibu.github.io/LSHeat/LSHeat/leaflet-heat.js"></script>');
 
