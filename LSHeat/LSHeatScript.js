@@ -1,3 +1,12 @@
+// ==UserScript==
+// @name         LS Heatmap DEV
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Skript zur Anzeige eines Heatmap-Overlays, zur Identifikation von Cold-Spots in der Abdeckung.
+// @author       Jalibu
+// @match        https://www.leitstellenspiel.de/*
+// @grant        none
+// ==/UserScript==
 (function() {
     'use strict';
 
@@ -80,12 +89,18 @@
         71: 'AB-MZB'
     };
 
+    var vehicleClasses = {
+        '1000': {'name': '[Löschfahrzeuge]', 'vehicleTypeIds': [0, 1,6,7,8,9,30,37]},
+        '1001': {'name': '[Tanklöschfahrzeuge]', 'vehicleTypeIds': [17,18,19,20,21,22,23,24,25,26]},
+        '1002': {'name': '[Schlauchwagen]', 'vehicleTypeIds': [11,13,14,15,16]},
+    };
+
     function getSettings(){
         var settings = {
             'heatmap-activated': {'name': 'Aktiviert', 'type': 'boolean', 'default': false},
             'heatmap-radius': {'name': 'Radius', 'type': 'range', 'default': '80'},
             'heatmap-intensity': {'name': 'Intensität', 'type': 'range', 'default': '15'},
-            'heatmap-vehicle': {'name': 'Fahrzeug-Typ', 'type': 'select', 'default': '0', 'values' : carIds}
+            'heatmap-vehicle': {'name': 'Fahrzeug-Typ', 'type': 'select', 'default': '0'}
         };
 
         if (!window.localStorage.getItem(LS_HEATMAP_STORAGE)) {
@@ -157,38 +172,52 @@
                 $(wrapper).attr('data-opened', 'true');
 
                 // Aktiviert
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Aktiviert</td><td><input type="checkbox" id="heatmap-activated"></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Aktiviert</td><td><input class="ls-input" type="checkbox" id="heatmap-activated"></td></tr>');
                 if(getSetting('heatmap-activated')){
                     $('#heatmap-activated').attr('checked', 'checked');
                 }
 
                 // Radius
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><input type="text" value="' + getSetting('heatmap-radius') + '" id="heatmap-radius"></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><input class="ls-input" type="text" value="' + getSetting('heatmap-radius') + '" id="heatmap-radius"></td></tr>');
 
                 // Intensity
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><input type="text" value="' + getSetting('heatmap-intensity') + '" id="heatmap-intensity"></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><input class="ls-input" type="text" value="' + getSetting('heatmap-intensity') + '" id="heatmap-intensity"></td></tr>');
 
                 // Vehicle
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Fahrzeug</td><td><select id="heatmap-vehicle"></select></td></tr>');
-                for (var key in carIds) {
-                    if(getSetting('heatmap-vehicle') == key){
-                        $('#heatmap-vehicle').append('<option selected value="'+ key + '">' + carIds[key] + '</option>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Fahrzeug</td><td><select class="ls-input" id="heatmap-vehicle"></select></td></tr>');
+
+                for(var key in vehicleClasses){
+                    if(getSetting('heatmap-vehicle') == this){
+                        $('#heatmap-vehicle').append('<option selected value="'+ key + '">' + vehicleClasses[key].name + '</option>');
                     } else {
-                        $('#heatmap-vehicle').append('<option value="'+ key + '">' + carIds[key] + '</option>');
+                        $('#heatmap-vehicle').append('<option value="'+ key + '">' + vehicleClasses[key].name + '</option>');
                     }
                 }
 
-                // Buttons
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td><button id="heatmap_save" class="btn btn-success">Speichern</button></td><td><button id="heatmap_close" class="btn">Schließen</button></td></tr>');
+                $(availableVehicles).each(function(){
+                    if(getSetting('heatmap-vehicle') == this){
+                        $('#heatmap-vehicle').append('<option selected value="'+ this + '">' + carIds[this] + '</option>');
+                    } else {
+                        $('#heatmap-vehicle').append('<option value="'+ this + '">' + carIds[this] + '</option>');
+                    }
+                });
 
-                $('#heatmap_save').click(function () {
+                $('#ls-heatmap-config .ls-input').on('change', function () {
                     setSettings();
                     renderMap();
+                });
+
+                // Buttons
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td><button id="heatmap_close" class="btn">Schließen</button><td><button id="heatmap_reset" class="btn">Zurücksetzen</button></td></td></tr>');
+
+                $('#heatmap_reset').click(function () {
+                    window.localStorage.removeItem(LS_HEATMAP_STORAGE);
+                    renderMap();
+                    $('#ls-heatmap-config-img').click();
                     $('#ls-heatmap-config-img').click();
                 });
 
                 $('#heatmap_close').click(function () {
-
                     $('#ls-heatmap-config-img').click();
                 });
             }
@@ -196,12 +225,13 @@
         });
     }
     var heat;
+    var availableVehicles = [];
     function renderMap(){
-    	if (heat !== undefined) {
-    		map.removeLayer(heat);
-    		heat = undefined;
-    	}
-    	
+        if (heat !== undefined) {
+            map.removeLayer(heat);
+            heat = undefined;
+        }
+
         if(getSetting('heatmap-activated')){
             var vehicles = [];
             $('#building_list .building_list_li').each(function(){
@@ -211,8 +241,9 @@
                 $(this).find('.building_list_vehicle_element').each(function(){
                     var vehicle_type_id = $(this).find('.vehicle_building_list_button').attr('vehicle_type_id');
                     var name = $(this).find('.vehicle_building_list_button').text();
-                    var vehicle = {'vehicle_type_id': vehicle_type_id, 'lat': lat, 'long': long, 'name': name};
+                    var vehicle = {'vehicle_type_id': parseInt(vehicle_type_id), 'lat': lat, 'long': long, 'name': name};
                     vehicles.push(vehicle);
+                    if (availableVehicles.indexOf(vehicle_type_id) === -1) availableVehicles.push(vehicle_type_id);
                 });
             });
 
@@ -220,6 +251,8 @@
             $(vehicles).each(function(){
                 var vehicle = this;
                 if(vehicle.vehicle_type_id == getSetting('heatmap-vehicle')){
+                    entries.push([vehicle.lat, vehicle.long, getSetting('heatmap-intensity')]);
+                } else if(vehicleClasses[getSetting('heatmap-vehicle')] !== undefined && vehicleClasses[getSetting('heatmap-vehicle')].vehicleTypeIds.indexOf(vehicle.vehicle_type_id ) !== -1){
                     entries.push([vehicle.lat, vehicle.long, getSetting('heatmap-intensity')]);
                 }
             });
