@@ -1,14 +1,10 @@
-// ==UserScript==
-// @name         LS Heatmap DEV
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  Skript zur Anzeige eines Heatmap-Overlays, zur Identifikation von Cold-Spots in der Abdeckung.
-// @author       Jalibu
-// @match        https://www.leitstellenspiel.de/*
-// @grant        none
-// ==/UserScript==
 (function() {
     'use strict';
+
+    if(!jquery.ui){
+        $('head').append('<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>');
+        $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></script>');
+    }
 
     $('head').append('<script type="text/javascript" src="https://jalibu.github.io/LSHeat/LSHeat/leaflet-heat.js"></script>');
 
@@ -128,6 +124,9 @@
                 } else {
                     settings[key].value = false;
                 }
+            } else if(settings[key].type == 'range'){
+                console.log(formElement.slider("value"));
+                settings[key].value = formElement.slider("value");
             } else{
                 settings[key].value = parseInt(formElement.val());
             }
@@ -178,10 +177,10 @@
                 }
 
                 // Radius
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><input class="ls-input" type="text" value="' + getSetting('heatmap-radius') + '" id="heatmap-radius"></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><div class="value-slider" data-min="0" data-max="200" data-value="'+ getSetting('heatmap-radius') +'" id="heatmap-radius"></div></td></tr>');
 
                 // Intensity
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><input class="ls-input" type="text" value="' + getSetting('heatmap-intensity') + '" id="heatmap-intensity"></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><div class="value-slider" data-min="0" data-max="50" data-value="'+ getSetting('heatmap-intensity') +'" id="heatmap-intensity"></div></td></tr>');
 
                 // Vehicle
                 $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Fahrzeug</td><td><select class="ls-input" id="heatmap-vehicle"></select></td></tr>');
@@ -205,6 +204,22 @@
                 $('#ls-heatmap-config .ls-input').on('change', function () {
                     setSettings();
                     renderMap();
+                });
+
+                $('.value-slider').slider({
+                    start: function(){
+                        map.dragging.disable();
+                    },
+                    stop: function(){
+                        map.dragging.enable();
+                        setSettings();
+                        renderMap();
+                    },
+                    create: function(event, ui) {
+                        $(this).slider('option', 'max', $(this).data('max'));
+                        $(this).slider('option', 'value', $(this).data('value'));
+                    },
+                    min: 1
                 });
 
                 // Buttons
