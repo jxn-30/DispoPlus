@@ -4,8 +4,7 @@
     $('head').append('<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>');
     $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></script>');
 
-
-    $('head').append('<script type="text/javascript" src="https://jalibu.github.io/LSHeat/LSHeat/leaflet-heat.js"></script>');
+    $('head').append('<script type="text/javascript" src="https://jalibu.github.io/LSHeat/LSHeat/vendor/leaflet-heat.js"></script>');
 
     var LS_HEATMAP_STORAGE = "LS_HEATMAP_STORAGE";
 
@@ -124,7 +123,6 @@
                     settings[key].value = false;
                 }
             } else if(settings[key].type == 'range'){
-                console.log(formElement.slider("value"));
                 settings[key].value = formElement.slider("value");
             } else{
                 settings[key].value = parseInt(formElement.val());
@@ -151,13 +149,7 @@
     }
 
     function renderMapSettings(){
-        var btn_text;
-        if(getSetting('heatmap-activated')){
-            btn_text = carIds[getSetting('heatmap-vehicle')];
-        } else {
-            btn_text = "Aktivieren";
-        }
-        $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<div id="ls-heatmap-config-wrapper" class="leaflet-bar leaflet-control" style="background-color: white;"><img id="ls-heatmap-config-img" style="height: 32px; width: 32px; cursor: pointer;" src="https://jalibu.github.io/LSHeat/LSHeat/ls-heat-layer.png"></div>');
+        $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<div id="ls-heatmap-config-wrapper" class="leaflet-bar leaflet-control" style="background-color: white;"><img id="ls-heatmap-config-img" style="height: 32px; width: 32px; cursor: pointer;" src="https://jalibu.github.io/LSHeat/LSHeat/images/ls-heat-layer.png"></div>');
         $('#ls-heatmap-config-img').on('click', function(){
             var wrapper = $('#ls-heatmap-config-wrapper');
             var isOpened = $(wrapper).attr('data-opened') == 'true';
@@ -165,7 +157,7 @@
                 $('#ls-heatmap-config').remove();
                 $(wrapper).attr('data-opened', 'false');
             } else {
-                var mapConfig = '<div id="ls-heatmap-config"><table style="margin-left: 30px; margin-bottom: 10px; margin-right: 10px;" class="ls-form-group"></table>';
+                var mapConfig = '<div id="ls-heatmap-config"><table style="line-height: 30px; margin-left: 30px; margin-bottom: 10px; margin-right: 10px;" class="ls-form-group"></table>';
                 $('#ls-heatmap-config-wrapper').append(mapConfig);
                 $(wrapper).attr('data-opened', 'true');
 
@@ -179,7 +171,7 @@
                 $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><div class="value-slider" data-min="0" data-max="200" data-value="'+ getSetting('heatmap-radius') +'" id="heatmap-radius"></div></td></tr>');
 
                 // Intensity
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><div class="value-slider" data-min="0" data-max="50" data-value="'+ getSetting('heatmap-intensity') +'" id="heatmap-intensity"></div></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><div class="value-slider" data-min="0" data-max="20" data-value="'+ getSetting('heatmap-intensity') +'" id="heatmap-intensity"></div></td></tr>');
 
                 // Vehicle
                 $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Fahrzeug</td><td><select class="ls-input" id="heatmap-vehicle"></select></td></tr>');
@@ -192,7 +184,7 @@
                     }
                 }
 
-                $(availableVehicles).each(function(){
+                $(availableVehicleTypes).each(function(){
                     if(getSetting('heatmap-vehicle') == this){
                         $('#heatmap-vehicle').append('<option selected value="'+ this + '">' + carIds[this] + '</option>');
                     } else {
@@ -211,12 +203,14 @@
                     },
                     stop: function(){
                         map.dragging.enable();
-                        setSettings();
-                        renderMap();
                     },
                     create: function(event, ui) {
                         $(this).slider('option', 'max', $(this).data('max'));
                         $(this).slider('option', 'value', $(this).data('value'));
+                    },
+                    slide: function() {
+                        setSettings();
+                        renderMap();
                     },
                     min: 1
                 });
@@ -238,28 +232,38 @@
 
         });
     }
+    var availableVehicleTypes = [];
+    function getVehicles(){
+        var vehicles = [];
+        $('#building_list .building_list_li').each(function(){
+            var building = $(this);
+            var long = $(building).find('.map_position_mover').attr('data-longitude');
+            var lat = $(building).find('.map_position_mover').attr('data-latitude');
+            $(this).find('.building_list_vehicle_element').each(function(){
+                var vehicle_type_id = $(this).find('.vehicle_building_list_button').attr('vehicle_type_id');
+                var name = $(this).find('.vehicle_building_list_button').text();
+                var vehicle = {'vehicle_type_id': parseInt(vehicle_type_id), 'lat': lat, 'long': long, 'name': name};
+                vehicles.push(vehicle);
+                if (availableVehicleTypes.indexOf(vehicle_type_id) === -1) availableVehicleTypes.push(vehicle_type_id);
+            });
+        });
+        return vehicles;
+    }
+
     var heat;
-    var availableVehicles = [];
+
+    var vehicles;
     function renderMap(){
         if (heat !== undefined) {
             map.removeLayer(heat);
             heat = undefined;
         }
 
+        if(vehicles === undefined){
+            vehicles = getVehicles();
+        }
+
         if(getSetting('heatmap-activated')){
-            var vehicles = [];
-            $('#building_list .building_list_li').each(function(){
-                var building = $(this);
-                var long = $(building).find('.map_position_mover').attr('data-longitude');
-                var lat = $(building).find('.map_position_mover').attr('data-latitude');
-                $(this).find('.building_list_vehicle_element').each(function(){
-                    var vehicle_type_id = $(this).find('.vehicle_building_list_button').attr('vehicle_type_id');
-                    var name = $(this).find('.vehicle_building_list_button').text();
-                    var vehicle = {'vehicle_type_id': parseInt(vehicle_type_id), 'lat': lat, 'long': long, 'name': name};
-                    vehicles.push(vehicle);
-                    if (availableVehicles.indexOf(vehicle_type_id) === -1) availableVehicles.push(vehicle_type_id);
-                });
-            });
 
             var entries = [];
             $(vehicles).each(function(){

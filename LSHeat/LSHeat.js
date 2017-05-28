@@ -1,14 +1,11 @@
 // ==UserScript==
 // @name         LS Heatmap
-// @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      1.0
 // @description  Skript zur Anzeige eines Heatmap-Overlays, zur Identifikation von Cold-Spots in der Abdeckung.
 // @author       Jalibu
 // @match        https://www.leitstellenspiel.de/*
 // @grant        none
+// @run          document-start
 // ==/UserScript==
 
-var scriptElement = document.createElement("script");
-scriptElement.type = "text/javascript";
-scriptElement.src = "https://jalibu.github.io/LSHeat/LSHeat/LSHeatScript.min.js";
-document.body.appendChild(scriptElement);
+$('head').append('<script type="text/javascript" src="https://jalibu.github.io/LSHeat/LSHeat/LSHeatScript.min.js"></script>');
