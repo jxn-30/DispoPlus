@@ -1,100 +1,68 @@
-(function() {
+(function(I18n, $) {
     'use strict';
+    
+    var LS_HEATMAP_STORAGE = "LS_HEATMAP_STORAGE";
+    var SCRIPT_URL = "https://jalibu.github.io/LSHeat/LSHeat";
+    
+    I18n.translations.de['lssm'] = I18n.translations.de['lssm'] || {};
+    I18n.translations.en['lssm'] = I18n.translations.en['lssm'] || {};
+    
+    I18n.translations.de['lssm']['heatmap'] = {
+            loeschfz: "Löschfahrzeuge",
+            tankloeschfz: "Tanklöschfahrzeuge",
+            schlauchwg: "Schlauchwagen",
+            ruest: "Rüstwagen",
+            oel: "Öl",
+            dekon: "Dekon-P",
+            atem: "Atemschutz",
+            elw: "ELW 1+2",
+            radius: "Radius",
+            activated: "Aktiviert",
+            intensity: "Intensität",
+            vehicleType: "Fahrzeug-Typ",
+            reset: "Zurücksetzen",
+            close: "Schließen"
+    };
+    
+    I18n.translations.en['lssm']['heatmap'] = {
+            loeschfz: "Fire Trucks",
+            tankloeschfz: "Tank Fire Trucks",
+            schlauchwg: "Watercar",
+            ruest: "Supply Truck",
+            oel: "Oil",
+            dekon: "Decon-P",
+            atem: "Respiratory",
+            elw: "ELW 1+2",
+            radius: "Radius",
+            activated: "Activated",
+            intensity: "Intensity",
+            vehicleType: "Vehicle type",
+            reset: "Reset",
+            close: "Close"
+    };
 
     $('head').append('<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>');
     $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></script>');
 
-    $('head').append('<script type="text/javascript" src="https://jalibu.github.io/LSHeat/LSHeat/vendor/leaflet-heat.js"></script>');
-
-    var LS_HEATMAP_STORAGE = "LS_HEATMAP_STORAGE";
-
-    var carIds = {
-        0: 'LF 20',
-        1: 'LF 10',
-        2: 'DLK 23',
-        3: 'ELW 1',
-        4: 'RW',
-        5: 'GW-A',
-        6: 'LF 8/6',
-        7: 'LF 20/16',
-        8: 'LF 10/6',
-        9: 'LF 16-TS',
-        10: 'GW-Öl',
-        11: 'GW-L2-Wasser',
-        12: 'GW-Messtechnik',
-        13: 'SW 1000',
-        14: 'SW 2000',
-        15: 'SW 2000-Tr',
-        16: 'SW KatS',
-        17: 'TLF 2000',
-        18: 'TLF 3000',
-        19: 'TLF 8/8',
-        20: 'TLF 8/18',
-        21: 'TLF 16/24-Tr',
-        22: 'TLF 16/25',
-        23: 'TLF 16/45',
-        24: 'TLF 20/40',
-        25: 'TLF 20/40-SL',
-        26: 'TLF 16',
-        27: 'GW-Gefahrgut',
-        28: 'RTW',
-        29: 'NEF',
-        30: 'HLF 20',
-        31: 'RTH',
-        32: 'FuStW',
-        33: 'GW-Höhenrettung',
-        34: 'ELW 2',
-        35: 'leBefKw',
-        36: 'MTW',
-        37: 'TSF-W',
-        38: 'KTW',
-        39: 'GKW',
-        40: 'MTW-TZ',
-        41: 'MzKW',
-        42: 'LKW K9',
-        43: 'BRmG R',
-        44: 'Anh. DLE',
-        45: 'MLW 5',
-        46: 'WLF',
-        47: 'AB-Rüst',
-        48: 'AB-Atemschutz',
-        49: 'AB-Öl',
-        50: 'GruKw',
-        51: 'FüKw',
-        52: 'GefKw',
-        53: 'GW Dekon-P',
-        54: 'AB-Dekon-P',
-        55: 'KdoW-LNA',
-        56: 'KdoW-OrgL',
-        57: 'Kran',
-        58: 'KTW Typ B',
-        59: 'ELW 1 (SEG)',
-        60: 'GW-SAN',
-        61: 'Polizeihubschrauber',
-        62: 'AB-Schlauch',
-        63: 'GW-Taucher',
-        64: 'GW-Wasserrettung',
-        65: 'LKW 7 Lkr 19 tm',
-        66: 'Anh MzB',
-        67: 'Anh SchlB',
-        68: 'Anh MzAB',
-        69: 'Tauchkraftwagen',
-        70: 'MZB',
-        71: 'AB-MZB'
-    };
+    $('head').append('<script type="text/javascript" src="' + SCRIPT_URL + '/vendor/leaflet-heat.js"></script>');
 
     var vehicleClasses = {
-        '1000': {'name': '[Löschfahrzeuge]', 'vehicleTypeIds': [0, 1,6,7,8,9,30,37]},
-        '1001': {'name': '[Tanklöschfahrzeuge]', 'vehicleTypeIds': [17,18,19,20,21,22,23,24,25,26]},
-        '1002': {'name': '[Schlauchwagen]', 'vehicleTypeIds': [11,13,14,15,16]},
+        '1000': {'name': '[' + I18n.t('lssm.heatmap.loeschfz') + ']', 'vehicleTypeIds': [0, 1,6,7,8,9,30,37]},
+        '1001': {'name': '[' + I18n.t('lssm.heatmap.tankloeschfz') + ']', 'vehicleTypeIds': [17,18,19,20,21,22,23,24,25,26]},
+        '1002': {'name': '[' + I18n.t('lssm.heatmap.schlauchwg') + ']', 'vehicleTypeIds': [11,13,14,15,16]},
+        '1003': {'name': '[' + I18n.t('lssm.heatmap.ruest') + ']', 'vehicleTypeIds': [4,30,47]},
+        '1004': {'name': '[' + I18n.t('lssm.heatmap.oel') + ']', 'vehicleTypeIds': [10,49]},
+        '1005': {'name': '[' + I18n.t('lssm.heatmap.dekon') + ']', 'vehicleTypeIds': [53,54]},
+        '1006': {'name': '[' + I18n.t('lssm.heatmap.atem') + ']', 'vehicleTypeIds': [5,48]},
+        '1007': {'name': '[' + I18n.t('lssm.heatmap.elw') + ']', 'vehicleTypeIds': [3,34]}
     };
 
     function getSettings(){
         var settings = {
-            'heatmap-activated': {'name': 'Aktiviert', 'type': 'boolean', 'default': false},
-            'heatmap-radius': {'name': 'Radius', 'type': 'range', 'default': '80'},
-            'heatmap-intensity': {'name': 'Intensität', 'type': 'range', 'default': '15'},
-            'heatmap-vehicle': {'name': 'Fahrzeug-Typ', 'type': 'select', 'default': '0'}
+            'heatmap-activated': {'name': I18n.t('lssm.heatmap.activated'), 'type': 'boolean', 'default': false},
+            'heatmap-radius': {'name': I18n.t('lssm.heatmap.radius'), 'type': 'range', 'default': '80'},
+            'heatmap-intensity': {'name': I18n.t('lssm.heatmap.intensity'), 'type': 'range', 'default': '15'},
+            'heatmap-vehicle': {'name': I18n.t('lssm.heatmap.vehicleType'), 'type': 'select', 'default': '1000'}
         };
 
         if (!window.localStorage.getItem(LS_HEATMAP_STORAGE)) {
@@ -149,7 +117,7 @@
     }
 
     function renderMapSettings(){
-        $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<div id="ls-heatmap-config-wrapper" class="leaflet-bar leaflet-control" style="background-color: white;"><img id="ls-heatmap-config-img" style="height: 32px; width: 32px; cursor: pointer;" src="https://jalibu.github.io/LSHeat/LSHeat/images/ls-heat-layer.png"></div>');
+        $('.leaflet-control-container .leaflet-bottom.leaflet-left').append('<div id="ls-heatmap-config-wrapper" class="leaflet-bar leaflet-control" style="background-color: white;"><img id="ls-heatmap-config-img" style="height: 32px; width: 32px; cursor: pointer;" src="' + SCRIPT_URL +'/images/ls-heat-layer.png"></div>');
         $('#ls-heatmap-config-img').on('click', function(){
             var wrapper = $('#ls-heatmap-config-wrapper');
             var isOpened = $(wrapper).attr('data-opened') == 'true';
@@ -166,13 +134,7 @@
                 if(getSetting('heatmap-activated')){
                     $('#heatmap-activated').attr('checked', 'checked');
                 }
-
-                // Radius
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><div class="value-slider" data-min="0" data-max="200" data-value="'+ getSetting('heatmap-radius') +'" id="heatmap-radius"></div></td></tr>');
-
-                // Intensity
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><div class="value-slider" data-min="0" data-max="20" data-value="'+ getSetting('heatmap-intensity') +'" id="heatmap-intensity"></div></td></tr>');
-
+                
                 // Vehicle
                 $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Fahrzeug</td><td><select class="ls-input" id="heatmap-vehicle"></select></td></tr>');
 
@@ -186,11 +148,18 @@
 
                 $(availableVehicleTypes).each(function(){
                     if(getSetting('heatmap-vehicle') == this){
-                        $('#heatmap-vehicle').append('<option selected value="'+ this + '">' + carIds[this] + '</option>');
+                        $('#heatmap-vehicle').append('<option selected value="'+ this + '">' + carsById[this][0] + '</option>');
                     } else {
-                        $('#heatmap-vehicle').append('<option value="'+ this + '">' + carIds[this] + '</option>');
+                        $('#heatmap-vehicle').append('<option value="'+ this + '">' + carsById[this][0] + '</option>');
                     }
                 });
+
+                // Radius
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Radius</td><td><div class="value-slider" data-min="0" data-max="200" data-value="'+ getSetting('heatmap-radius') +'" id="heatmap-radius"></div></td></tr>');
+
+                // Intensity
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td>Intensität</td><td><div class="value-slider" data-min="0" data-max="20" data-value="'+ getSetting('heatmap-intensity') +'" id="heatmap-intensity"></div></td></tr>');
+
 
                 $('#ls-heatmap-config .ls-input').on('change', function () {
                     setSettings();
@@ -216,7 +185,7 @@
                 });
 
                 // Buttons
-                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td><button id="heatmap_close" class="btn">Schließen</button><td><button id="heatmap_reset" class="btn">Zurücksetzen</button></td></td></tr>');
+                $('#ls-heatmap-config .ls-form-group').append('<tr class="ls-heatmap-option"><td><button id="heatmap_close" class="btn btn-default btn-xs">' + I18n.t('lssm.heatmap.close') + '</button><td><button id="heatmap_reset" class="btn btn-default btn-xs">' + I18n.t('lssm.heatmap.reset') + '</button></td></td></tr>');
 
                 $('#heatmap_reset').click(function () {
                     window.localStorage.removeItem(LS_HEATMAP_STORAGE);
@@ -277,4 +246,78 @@
             heat = L.heatLayer(entries, {radius: getSetting('heatmap-radius')}).addTo(map);
         }
     }
-})();
+    var carsById = {
+    	    "0": ["LF 20", 0],
+    	    "1": ["LF 10", 0],
+    	    "2": ["DLK 23", 0],
+    	    "3": ["ELW 1", 0],
+    	    "4": ["RW", 0],
+    	    "5": ["GW-A", 0],
+    	    "6": ["LF 8/6", 0],
+    	    "7": ["LF 20/16", 0],
+    	    "8": ["LF 10/6", 0],
+    	    "9": ["LF 16-TS", 0],
+    	    "10": ["GW-Öl", 0],
+    	    "11": ["GW-L2-Wasser", 0],
+    	    "12": ["GW-Messtechnik", 0],
+    	    "13": ["SW 1000", 0],
+    	    "14": ["SW 2000", 0],
+    	    "15": ["SW 2000-Tr", 0],
+    	    "16": ["SW Kats", 0],
+    	    "17": ["TLF 2000", 0],
+    	    "18": ["TLF 3000", 0],
+    	    "19": ["TLF 8/18", 0],
+    	    "20": ["TLF 8/18", 0],
+    	    "21": ["TLF 16/24-Tr", 0],
+    	    "22": ["TLF 16/25", 0],
+    	    "23": ["TLF 16/45", 0],
+    	    "24": ["TLF 20/40", 0],
+    	    "25": ["TLF 20/40-SL", 0],
+    	    "26": ["TLF 16", 0],
+    	    "27": ["GW-Gefahrgut", 0],
+    	    "28": ["RTW", 1],
+    	    "29": ["NEF", 1],
+    	    "30": ["HLF 20", 0],
+    	    "31": ["RTH", 1],
+    	    "32": ["FuStW", 2],
+    	    "33": ["GW-Höhenrettung", 0],
+    	    "34": ["ELW 2", 0],
+    	    "35": ["leBefKw", 2],
+    	    "36": ["MTW", 0],
+    	    "37": ["TSF-W", 0],
+    	    "38": ["KTW", 1],
+    	    "39": ["GKW", 3],
+    	    "40": ["MTW-TZ", 3],
+    	    "41": ["MzKW", 3],
+    	    "42": ["LKW K 9", 3],
+    	    "43": ["BRmG R", 3],
+    	    "44": ["Anh DLE", 3],
+    	    "45": ["MLW 5", 3],
+    	    "46": ["WLF", 0],
+    	    "47": ["AB-Rüst", 0],
+    	    "48": ["AB-Atemschutz", 0],
+    	    "49": ["AB-Öl", 0],
+    	    "50": ["GruKw", 2],
+    	    "51": ["FüKw", 2],
+    	    "52": ["GefKw", 2],
+    	    "53": ["Dekon-P", 0],
+    	    "54": ["AB-Dekon-P", 0],
+    	    "55": ["KdoW-LNA", 1],
+    	    "56": ["KdoW-Orgl", 1],
+    	    "57": ["FwK", 0],
+    	    "58": ["KTW Typ B", 1],
+    	    "59": ["ELW 1 (SEG)", 1],
+    	    "60": ["GW-San", 1],
+    	    "61": ["Polizeihubschrauber", 2],
+    	    "62": ["AB-Schlauch", 0],
+    	    "63": ["GW-Taucher", 4],
+    	    "64": ["GW-Wasserrettung", 4],
+    	    "65": ["LKW 7 Lkr 19 tm", 4],
+    	    "66": ["Anh MzB", 4],
+    	    "67": ["Anh SchlB", 4],
+    	    "68": ["Anh MzAB", 4],
+    	    "69": ["Tauchkraftwagen", 4],
+    	    "70": ["MZB", 4],
+    	    "71": ["AB-MZB", 4],
+    	};
+})(I18n, jQuery);
