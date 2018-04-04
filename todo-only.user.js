@@ -22,7 +22,6 @@
         $('#mission_list_alliance, #mission_list_sicherheitswache > div').each(function(){
             let panel = $(this).find('div.panel');
             if(panel.attr('class') && panel.attr('class').indexOf('green') >= 0){
-                console.log($(this).find('span.glyphicon-user:visible').length);
                 if($(this).find('span.glyphicon-user:visible').length > 0){
                     $(this).hide();
                 }
