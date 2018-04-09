@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Kreisgrenzen (DE only)
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.0.1
 // @description  Fügt Kreisgrenzen auf der Karte ein.
 // @author       Jalibu
 // @match        https://www.leitstellenspiel.de/
@@ -13,6 +13,8 @@
     const STORAGE = 'LSS_KREISGRENZEN';
 
     $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'https://cdn.rawgit.com/patosai/tree-multiselect/v2.4.1/dist/jquery.tree-multiselect.min.css') );
+    let style = '<style>div.tree-multiselect>div.selected>div.item{background: #777; color: white;} div.tree-multiselect div.section>div.item{background: #white; color: #777;}</style>';
+    $('head').append(style);
 
     var myStyle = {
         "weight": 2,
@@ -37,7 +39,7 @@
         let markup = '<div id="kreise-modal" style="display: none; z-index: 99999; background: #fff; top: 20px; position: absolute; width: 50%; left: 25%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
         markup += '<div class="modal-header">';
         markup += '<button type="button" class="close kreise-close" data-dismiss="modal" aria-hidden="true">×</button>';
-        markup += '<h3>Angezeigte Kreise</h3>';
+        markup += '<h3 style="color:#333;">Angezeigte Kreise</h3>';
         markup += '</div>';
         markup += '<div class="modal-body" style="overflow: scroll;">';
 
