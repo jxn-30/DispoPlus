@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      2.1
+// @version      2.2
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -19,7 +19,7 @@
 
     let processAllianceShare = () => {
         let message = 'frei zum sammeln!';
-        let sendToAlliance = 1;
+        let sendToAlliance = 0;
         let missionShareLink = $('#mission_alliance_share_btn').attr('href');
         let missionId = missionShareLink.replace('/missions/','').replace('/alliance', '');
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -29,9 +29,9 @@
             $('.alert_notify_alliance').html('Chatten..');
             console.log('Mission is shared... Now post message to chat...');
             $.post( "/mission_replies", {authenticity_token: csrfToken, mission_reply: {alliance_chat: sendToAlliance, content: message, mission_id: missionId}}, (data, status, xhr) => {
-                console.log('Message posted... Reloading...');
-                $('.alert_notify_alliance').html('Laden..');
-                location.reload();
+                console.log('Message posted...');
+                $('.alert_notify_alliance').html('Alarmieren..');
+                $('#mission_alarm_btn').click();
             } );
         });
     };
