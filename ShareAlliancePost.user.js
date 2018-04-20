@@ -18,8 +18,8 @@
     };
 
     let processAllianceShare = () => {
-        let message = 'frei zum sammeln!';
-        let sendToAlliance = 0;
+        let message = 'Frei zum Sammeln!';
+        let sendToAlliance = 1;
         let missionShareLink = $('#mission_alliance_share_btn').attr('href');
         let missionId = missionShareLink.replace('/missions/','').replace('/alliance', '');
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
