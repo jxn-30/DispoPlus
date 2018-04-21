@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      2.4.1
+// @version      2.5.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -10,6 +10,8 @@
     'use strict';
 
     const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
+    const enableKeyboard = true;
+    const keyCode = 68; // 68 = d
     const message = 'Frei zum Mitverdienen!';
 
     // Create Button and add event listener
@@ -44,5 +46,12 @@
             } );
         });
     };
+
+    $('body').on('keydown',(e) => {
+        if(e.which === keyCode){
+            processAllianceShare();
+        }
+    });
+
     initButtons();
 })();
