@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      2.6.0
+// @version      2.6.1
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -10,8 +10,9 @@
     'use strict';
 
     const jumpNext = true; // Set to 'true', to jump to next mission after submitting an alert.
-    const enableKeyboard = true; // Set to 'false' to disable keyboard submits
+    const enableKeyboard = true; // Set to 'false', to disable keyboard shortcuts.
     const shortcutKeys = [17, 68]; // 17= ctrl, 68 = d
+    const postToChat = true; // Set to 'false', to disable post in alliance chat.
     const message = 'Frei zum Mitverdienen!';
 
     // Create Button and add event listener
@@ -56,7 +57,7 @@
 
     const processAllianceShare = () => {
 
-        const sendToAlliance = 1;
+        const sendToAlliance = postToChat ? 1 : 0;
         const missionShareLink = $('#mission_alliance_share_btn').attr('href');
         const missionId = missionShareLink.replace('/missions/','').replace('/alliance', '');
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
