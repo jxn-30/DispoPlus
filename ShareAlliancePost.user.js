@@ -35,7 +35,6 @@
             $(document).keydown((e) => {
                 keys.push(e.which);
                 if(keys.length === shortcutKeys.length){
-                    console.log('jo');
                     let pressedAll = true;
                     $.each(shortcutKeys, (index, value) =>{
                         if(keys.indexOf(value) < 0){
