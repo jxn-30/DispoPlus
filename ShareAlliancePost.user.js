@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      2.5.0
+// @version      2.6.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -9,9 +9,9 @@
 (() => {
     'use strict';
 
-    const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
-    const enableKeyboard = true;
-    const keyCode = 68; // 68 = d
+    const jumpNext = true; // Set to 'true', to jump to next mission after submitting an alert.
+    const enableKeyboard = true; // Set to 'false' to disable keyboard submits
+    const shortcutKeys = [17, 68]; // 17= ctrl, 68 = d
     const message = 'Frei zum Mitverdienen!';
 
     // Create Button and add event listener
@@ -24,6 +24,34 @@
         }
 
         $('.alert_notify_alliance').click(processAllianceShare);
+    };
+
+    // Add Keylisteners
+    const initKeys = () => {
+        if(enableKeyboard){
+            let keys = [];
+
+            $(document).keydown((e) => {
+                keys.push(e.which);
+                if(keys.length === shortcutKeys.length){
+                    console.log('jo');
+                    let pressedAll = true;
+                    $.each(shortcutKeys, (index, value) =>{
+                        if(keys.indexOf(value) < 0){
+                            pressedAll = false;
+                            return;
+                        }
+                    });
+                    if(pressedAll){
+                        processAllianceShare();
+                    }
+                }
+            });
+
+            $(document).keyup((e) => {
+                keys.splice(keys.indexOf(e.which));
+            });
+        }
     };
 
     const processAllianceShare = () => {
@@ -47,11 +75,7 @@
         });
     };
 
-    $('body').on('keydown',(e) => {
-        if(e.which === keyCode){
-            processAllianceShare();
-        }
-    });
 
     initButtons();
+    initKeys();
 })();
