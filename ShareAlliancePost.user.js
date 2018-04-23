@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      2.6.1
+// @version      3.0.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -9,22 +9,59 @@
 (() => {
     'use strict';
 
-    const jumpNext = true; // Set to 'true', to jump to next mission after submitting an alert.
+    const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
     const enableKeyboard = true; // Set to 'false', to disable keyboard shortcuts.
     const shortcutKeys = [17, 68]; // 17= ctrl, 68 = d
-    const postToChat = true; // Set to 'false', to disable post in alliance chat.
-    const message = 'Frei zum Mitverdienen!';
+    const defaultPostToChat = false; // Set to 'false', to disable default post in alliance chat.
+    const messages = ['Frei zum Mitverdienen', // First entry is default
+                      'Rettungsdienst benötigt',
+                      'Weitere Kräfte benötigt'];
 
     // Create Button and add event listener
     const initButtons = () => {
-        const btnMarkup = '<a href="#" class="btn btn-success btn-sm alert_notify_alliance hidden-xs" title="Alarmieren, im Verband freigeben und Nachricht in Verbands-Chat"><img class="icon icons8-Phone-Filled" src="/images/icons8-phone_filled.svg" width="18" height="18"> <img class="icon icons8-Share" src="/images/icons8-share.svg" width="20" height="20"> <span class="glyphicon glyphicon-bullhorn" style="font-size: 13px;"></span></a>';
+        let btnMarkup = '<div class="btn-group" style="margin-left: 5px; margin-right: 5px;">';
+
+        btnMarkup += '<a href="#" class="btn btn-success btn-sm alert_notify_alliance" title="Alarmieren, im Verband freigeben und Nachricht in Verbands-Chat">';
+        btnMarkup += '<img class="icon icons8-Phone-Filled" src="/images/icons8-phone_filled.svg" width="18" height="18">';
+        btnMarkup += '<img class="icon icons8-Share" src="/images/icons8-share.svg" width="20" height="20">';
+        btnMarkup += '<span class="glyphicon glyphicon-bullhorn" style="font-size: 13px;"></span>';
+        btnMarkup += '</a></div>';
+
+        let optionsBtnMarkup = '<a href="#" id="openAllianceShareOptions" class="btn btn-sm btn-default" title="Einstellungen" style="margin: 0">';
+        optionsBtnMarkup += '<span class="glyphicon glyphicon-option-horizontal"></span></a>';
+
+        optionsBtnMarkup += '<div class="btn btn-sm btn-default" style="margin:0; padding: 1px; display: none;" id="allianceShareOptions"><input type="text" id="allianceShareText" value="' + messages[0] + '">';
+        optionsBtnMarkup += '<label style="margin-left: 2px; margin-right: 2px;"><input type="checkbox" ' + (defaultPostToChat ? 'checked' : '') + ' id="postToChat" name="postToChat" value="true">An VB Chat?</label>';
+
+        optionsBtnMarkup += '<div style="text-align: left;"><ul>';
+        $.each(messages, (index, msg) => {
+            optionsBtnMarkup += '<li class="customAllianceShareText">' + msg + '</li>';
+        });
+        optionsBtnMarkup += '</ul></div>';
+        optionsBtnMarkup += '</div>';
+
         $('.alert_next_alliance').parent().append(btnMarkup);
+
+        $('.alert_notify_alliance').first().parent().prepend(optionsBtnMarkup);
+
+
+        $('#openAllianceShareOptions').click(() => {
+            $('#allianceShareOptions').show();
+            $('#openAllianceShareOptions').hide();
+        });
+
+
+        $('.customAllianceShareText').click(function() {
+            $('#allianceShareText').val($(this).text());
+        });
+
 
         if(jumpNext){
             $('.alert_notify_alliance').append('<span style="margin-left: 5px;" class="glyphicon glyphicon-arrow-right"></span>');
         }
 
         $('.alert_notify_alliance').click(processAllianceShare);
+
     };
 
     // Add Keylisteners
@@ -35,6 +72,7 @@
             $(document).keydown((e) => {
                 keys.push(e.which);
                 if(keys.length === shortcutKeys.length){
+                    console.log('jo');
                     let pressedAll = true;
                     $.each(shortcutKeys, (index, value) =>{
                         if(keys.indexOf(value) < 0){
@@ -56,10 +94,11 @@
 
     const processAllianceShare = () => {
 
-        const sendToAlliance = postToChat ? 1 : 0;
+        const sendToAlliance = $('#postToChat').is(':checked') ? 1 : 0;
         const missionShareLink = $('#mission_alliance_share_btn').attr('href');
         const missionId = missionShareLink.replace('/missions/','').replace('/alliance', '');
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const message = $('#allianceShareText').val();
 
         $('.alert_notify_alliance').html('Teilen..');
         $.get('/missions/' + missionId + '/alliance' , () => {
@@ -73,6 +112,7 @@
                 }
             } );
         });
+
     };
 
 
