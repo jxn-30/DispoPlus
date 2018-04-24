@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      3.0.0
+// @version      3.1.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -12,10 +12,12 @@
     const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
     const enableKeyboard = true; // Set to 'false', to disable keyboard shortcuts.
     const shortcutKeys = [17, 68]; // 17= ctrl, 68 = d
-    const defaultPostToChat = false; // Set to 'false', to disable default post in alliance chat.
+    const defaultPostToChat = true; // Set to 'false', to disable default post in alliance chat.
     const messages = ['Frei zum Mitverdienen', // First entry is default
                       'Rettungsdienst benötigt',
-                      'Weitere Kräfte benötigt'];
+                      'Weitere Kräfte benötigt',
+                      'Unterstützung in %ADDRESS% benötigt',
+                      'Offen bis %MY_CUSTOM_TIME%.'];
 
     // Create Button and add event listener
     const initButtons = () => {
@@ -94,6 +96,9 @@
 
     const processAllianceShare = () => {
 
+        $('#allianceShareOptions').hide();
+        $('#openAllianceShareOptions').show();
+
         const sendToAlliance = $('#postToChat').is(':checked') ? 1 : 0;
         const missionShareLink = $('#mission_alliance_share_btn').attr('href');
         const missionId = missionShareLink.replace('/missions/','').replace('/alliance', '');
@@ -115,7 +120,15 @@
 
     };
 
+    const transformMessages = () => {
+        const address = $('.mission_header_info >> small').first().text().trim().split(',')[1].split('|')[0];
+        for(let i = 0; i<messages.length; i++){
+            messages[i] = messages[i].replace('%ADDRESS%', address);
+            messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', new Date().getHours()+4 + ':00 Uhr');
+        }
+    };
 
+    transformMessages();
     initButtons();
     initKeys();
 })();
