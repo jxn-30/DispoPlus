@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      3.1.0
+// @version      3.1.1
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -122,9 +122,11 @@
 
     const transformMessages = () => {
         const address = $('.mission_header_info >> small').first().text().trim().split(',')[1].split('|')[0];
+        let customTime = new Date().getHours()+3;
+        customTime = customTime > 24 ? customTime -24 : customTime;
         for(let i = 0; i<messages.length; i++){
             messages[i] = messages[i].replace('%ADDRESS%', address);
-            messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', new Date().getHours()+4 + ':00 Uhr');
+            messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', customTime + ':00 Uhr');
         }
     };
 
