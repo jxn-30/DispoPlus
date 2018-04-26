@@ -14,11 +14,10 @@
     const shortcutKeys = [17, 68]; // 17= ctrl, 68 = d
     const defaultPostToChat = true; // Set to 'false', to disable default post in alliance chat.
     const messages = ['Frei zum Mitverdienen', // First entry is default
-                      'Rettungsdienst benötigt',
+                      'Rettungsdienst für %PATIENTS_LEFT% Patienten benötigt',
                       'Weitere Kräfte benötigt',
                       'Unterstützung in %ADDRESS% benötigt',
-                      'Offen bis %MY_CUSTOM_TIME%.',
-                      '%PATIENTS_LEFT% Patienten übrig.'];
+                      'Offen bis %MY_CUSTOM_TIME%.'];
 
     // Create Button and add event listener
     const initButtons = () => {
@@ -127,7 +126,7 @@
             let addressAndPatrientRow = $('.mission_header_info >> small').first().text().trim().split(',');
             addressAndPatrientRow = addressAndPatrientRow[addressAndPatrientRow.length-1].split('|');
             const address = addressAndPatrientRow[0];
-            const patients = addressAndPatrientRow.length === 2 ? addressAndPatrientRow[1] : 0;
+            const patientsLeft = addressAndPatrientRow.length === 2 ? addressAndPatrientRow[1] : 0;
 
             // Prepare values for %MY_CUSTOM_TIME%
             let customTime = new Date().getHours()+3;
@@ -136,7 +135,7 @@
             for(let i = 0; i<messages.length; i++){
                 messages[i] = messages[i].replace('%ADDRESS%', address);
                 messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', customTime + ':00 Uhr');
-                messages[i] = messages[i].replace('%PATIENTS_LEFT%', patients);
+                messages[i] = messages[i].replace('%PATIENTS_LEFT%', patientsLeft);
             }
         } catch (e){
             console.log('Error transforming messages: ' + e);
