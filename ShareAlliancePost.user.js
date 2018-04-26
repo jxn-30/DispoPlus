@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      3.1.1
+// @version      3.2.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -17,7 +17,8 @@
                       'Rettungsdienst benötigt',
                       'Weitere Kräfte benötigt',
                       'Unterstützung in %ADDRESS% benötigt',
-                      'Offen bis %MY_CUSTOM_TIME%.'];
+                      'Offen bis %MY_CUSTOM_TIME%.',
+                      '%PATIENTS_LEFT% Patienten übrig.'];
 
     // Create Button and add event listener
     const initButtons = () => {
@@ -74,7 +75,6 @@
             $(document).keydown((e) => {
                 keys.push(e.which);
                 if(keys.length === shortcutKeys.length){
-                    console.log('jo');
                     let pressedAll = true;
                     $.each(shortcutKeys, (index, value) =>{
                         if(keys.indexOf(value) < 0){
@@ -121,12 +121,25 @@
     };
 
     const transformMessages = () => {
-        const address = $('.mission_header_info >> small').first().text().trim().split(',')[1].split('|')[0];
-        let customTime = new Date().getHours()+3;
-        customTime = customTime > 24 ? customTime -24 : customTime;
-        for(let i = 0; i<messages.length; i++){
-            messages[i] = messages[i].replace('%ADDRESS%', address);
-            messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', customTime + ':00 Uhr');
+        try {
+            // Prepare values for %ADDRESS% and %PATIENTS_LEFT%
+            // Possible inputs 'xy street, 1234 city', '1234 city', '123 city | 2' (where 2 is number of patients)
+            let addressAndPatrientRow = $('.mission_header_info >> small').first().text().trim().split(',');
+            addressAndPatrientRow = addressAndPatrientRow[addressAndPatrientRow.length-1].split('|');
+            const address = addressAndPatrientRow[0];
+            const patients = addressAndPatrientRow.length === 2 ? addressAndPatrientRow[1] : 0;
+
+            // Prepare values for %MY_CUSTOM_TIME%
+            let customTime = new Date().getHours()+3;
+            customTime = customTime > 24 ? customTime -24 : customTime;
+
+            for(let i = 0; i<messages.length; i++){
+                messages[i] = messages[i].replace('%ADDRESS%', address);
+                messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', customTime + ':00 Uhr');
+                messages[i] = messages[i].replace('%PATIENTS_LEFT%', patients);
+            }
+        } catch (e){
+            console.log('Error transforming messages: ' + e);
         }
     };
 
