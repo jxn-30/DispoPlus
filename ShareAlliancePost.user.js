@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      3.2.0
+// @version      3.3.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -11,7 +11,7 @@
 
     const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
     const enableKeyboard = true; // Set to 'false', to disable keyboard shortcuts.
-    const shortcutKeys = [17, 68]; // 17= ctrl, 68 = d
+    const shortcutKeys = [17, 68]; // 17 = ctrl, 68 = d
     const defaultPostToChat = true; // Set to 'false', to disable default post in alliance chat.
     const messages = ['Frei zum Mitverdienen', // First entry is default
                       'Rettungsdienst für %PATIENTS_LEFT% Patienten benötigt',
@@ -73,7 +73,7 @@
 
             $(document).keydown((e) => {
                 keys.push(e.which);
-                if(keys.length === shortcutKeys.length){
+                if(keys.length >= shortcutKeys.length){
                     let pressedAll = true;
                     $.each(shortcutKeys, (index, value) =>{
                         if(keys.indexOf(value) < 0){
@@ -82,7 +82,21 @@
                         }
                     });
                     if(pressedAll){
+                        // Is there an extra key pressed?
+                        if(keys.length > shortcutKeys.length){
+                            // Remove regular (expected pressed) keys from list
+                            let extraKey =  keys.filter( ( el ) => !shortcutKeys.includes( el ) );
+                            // As number 9 key has value 48, substract that to get an expected key (value) range from 1-9
+                            extraKey = extraKey[extraKey.length - 1] - 48;
+                            // If the extra button has the (value) number 1-9,
+                            // and the message array as a corresponding number of messages, select it
+                            if(extraKey > 0 && extraKey <=10 && extraKey <= messages.length){
+                                $('#allianceShareText').val(messages[extraKey - 1]);
+                            }
+                        }
+
                         processAllianceShare();
+
                     }
                 }
             });
@@ -129,7 +143,8 @@
             const patientsLeft = addressAndPatrientRow.length === 2 ? addressAndPatrientRow[1] : 0;
 
             // Prepare values for %MY_CUSTOM_TIME%
-            let customTime = new Date().getHours()+3;
+            let offsetInHours = 3;
+            let customTime = new Date().getHours() + offsetInHours;
             customTime = customTime > 24 ? customTime -24 : customTime;
 
             for(let i = 0; i<messages.length; i++){
