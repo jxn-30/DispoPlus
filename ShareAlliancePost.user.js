@@ -11,7 +11,7 @@
 
     const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
     const enableKeyboard = true; // Set to 'false', to disable keyboard shortcuts.
-    const shortcutKeys = [17, 68]; // 17 = ctrl, 68 = d
+    const shortcutKeys = [17, 68]; // 17 = ctrl, 68 = d || Hint: Press another optional number key (1-9) to set the corresponding message
     const defaultPostToChat = true; // Set to 'false', to disable default post in alliance chat.
     const messages = ['Frei zum Mitverdienen', // First entry is default
                       'Rettungsdienst für %PATIENTS_LEFT% Patienten benötigt',
