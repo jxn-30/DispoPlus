@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ShareAlliancePost
 // @namespace    Leitstellenspiel
-// @version      3.3.0
+// @version      3.4.0
 // @author       jalibu, JuMaHo
 // @include      https://www.leitstellenspiel.de/missions/*
 // ==/UserScript==
@@ -11,13 +11,14 @@
 
     const jumpNext = false; // Set to 'true', to jump to next mission after submitting an alert.
     const enableKeyboard = true; // Set to 'false', to disable keyboard shortcuts.
-    const shortcutKeys = [17, 68]; // 17 = ctrl, 68 = d || Hint: Press another optional number key (1-9) to set the corresponding message
+    const shortcutKeys = [17, 68]; // 17 = ctrl, 68 = d
     const defaultPostToChat = true; // Set to 'false', to disable default post in alliance chat.
     const messages = ['Frei zum Mitverdienen', // First entry is default
                       'Rettungsdienst für %PATIENTS_LEFT% Patienten benötigt',
                       'Weitere Kräfte benötigt',
                       'Unterstützung in %ADDRESS% benötigt',
-                      'Offen bis %MY_CUSTOM_TIME%.'];
+                      'Offen bis %MY_CUSTOM_TIME%.',
+                      '%REQUIRED_VEHICLES%'];
 
     // Create Button and add event listener
     const initButtons = () => {
@@ -143,14 +144,23 @@
             const patientsLeft = addressAndPatrientRow.length === 2 ? addressAndPatrientRow[1] : 0;
 
             // Prepare values for %MY_CUSTOM_TIME%
-            let offsetInHours = 3;
+            const offsetInHours = 3;
             let customTime = new Date().getHours() + offsetInHours;
             customTime = customTime > 24 ? customTime -24 : customTime;
+
+            // Prepare required Vehicles
+            const alertText = $('.alert-danger');
+            const requiredVehiclesIdentifier = 'Zusätzlich benötigte Fahrzeuge:';
+            let requiredVehicles = 'Keine weiteren Fahrzeuge benötigt.';
+            if(alertText && alertText.text().indexOf(requiredVehiclesIdentifier) >= 0){
+                requiredVehicles = alertText.text().trim().substr(requiredVehiclesIdentifier.length, alertText.text().trim().length-1);
+            }
 
             for(let i = 0; i<messages.length; i++){
                 messages[i] = messages[i].replace('%ADDRESS%', address);
                 messages[i] = messages[i].replace('%MY_CUSTOM_TIME%', customTime + ':00 Uhr');
                 messages[i] = messages[i].replace('%PATIENTS_LEFT%', patientsLeft);
+                messages[i] = messages[i].replace('%REQUIRED_VEHICLES%', requiredVehicles);
             }
         } catch (e){
             console.log('Error transforming messages: ' + e);
