@@ -2,7 +2,7 @@
     'use strict';
     
     var LS_HEATMAP_STORAGE = "LS_HEATMAP_STORAGE";
-    var SCRIPT_URL = "https://jalibu.github.io/LSHeat/LSHeat";
+    var SCRIPT_URL = "https://jalibu.github.io/DispoPlus/LSHeat/";
     
     I18n.translations.de['lssm'] = I18n.translations.de['lssm'] || {};
     I18n.translations.en['lssm'] = I18n.translations.en['lssm'] || {};
