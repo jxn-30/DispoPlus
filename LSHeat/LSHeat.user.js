@@ -8,4 +8,4 @@
 // @run          document-start
 // ==/UserScript==
 
-$('head').append('<script type="text/javascript" src="https://jalibu.github.io/DispoPlus/LSHeat/LSHeatScript.min.js"></script>');
+alert('Dieses Skript ist abgekündigt. Bitte verwende den LSSM');
