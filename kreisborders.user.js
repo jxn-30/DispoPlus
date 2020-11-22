@@ -5,6 +5,7 @@
 // @description  Fügt Kreisgrenzen auf der Karte ein.
 // @author       Jalibu
 // @match        https://www.leitstellenspiel.de/
+// @match        https://www.leitstellenspiel.de/profile/*
 // @grant        none
 // ==/UserScript==
 
