@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         LSS Landesgrenzen (DE only)
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Fügt Landesgrenzen auf der Karte ein.
 // @author       Jalibu
 // @match        https://www.leitstellenspiel.de/
 // @match        https://www.leitstellenspiel.de/profile/*
+// @match        https://polizei.leitstellenspiel.de/
+// @match        https://polizei.leitstellenspiel.de/profile/*
 // @grant        none
 // ==/UserScript==
 
